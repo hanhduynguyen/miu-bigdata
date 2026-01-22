@@ -1,0 +1,19 @@
+1. Start Zookeeper
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+2. Start Kafka server
+edit: server.properties: advertised.listeners=PLAINTEXT://<ip.vmware.host>:9092
+bin/kafka-server-start.sh config/server.properties
+
+3. Create topics
+bin/kafka-topics.sh --create --topic livestocks --bootstrap-server <ip.vmware.host>:9092
+bin/kafka-topics.sh --create --topic historytocks --bootstrap-server <ip.vmware.host>:9092
+
+4. Create test consumer
+bin/kafka-console-consumer.sh --topic livestocks --from-beginning --bootstrap-server <ip.vmware.host>:9092
+
+5. Create test producer
+bin/kafka-console-producer.sh --topic livestocks --bootstrap-server <ip.vmware.host>:9092
+
+6. Start Crawl data tool
+java -jar YahooFinance.jar conf.properties
