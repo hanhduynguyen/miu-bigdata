@@ -1,0 +1,18 @@
+1.===start zookeeper server===
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+2. ====start kafka server=========================
+bin/kafka-server-start.sh  config/server.properties
+
+3===create topic================
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic livestocks
+
+4.==start kafka yahoo finance producer
+
+5.==start spark stream -kafka consumer
+
+spark-submit --class "cs523.StockSparkStream.KafkaStockStream" --master yarn Desktop/StockSparkStream.jar kafka_zk_ipaddress hbase_zk_ipaddress <topic>
+
+6. scan hbase for data of 'history_stock" and 'live_stock" tables.
+
+7. tableue virzualize data

@@ -1,0 +1,61 @@
+CREATE EXTERNAL TABLE im_live_stock(
+id String,
+PreviousClose String,
+MarketPrice String,
+regularMarketChange String,
+regularMarketChangePercent String,
+currency String,
+regularMarketTime String,
+regularMarketVolume String
+) 
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' 
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,
+stock_details:regularMarketPreviousClose,
+stock_details:regularMarketPrice,
+stock_details:regularMarketChange,                                           
+stock_details:regularMarketChangePercent, 
+stock_details:currency,
+stock_details:regularMarketTime,
+stock_details:regularMarketVolume")
+TBLPROPERTIES("hbase.table.name" = "live_stock");
+
+========================================================
+
+CREATE EXTERNAL TABLE im_history_stock(
+record_id String,
+sym String,
+PreviousClose String,
+regularMarketChange String,
+currency String,
+OrderTime String,
+DayLow String,
+DayHigh String,
+OpenPrice String,
+Volume String
+) 
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' 
+WITH SERDEPROPERTIES (
+"hbase.columns.mapping" = ":key,
+stock_details:symbol,
+stock_details:regularMarketPreviousClose,
+stock_details:regularMarketChange,
+stock_details:currency,
+stock_details:regularMarketTime,
+stock_details:regularMarketDayLow,
+stock_details:regularMarketDayHigh,
+stock_details:regularMarketOpen,
+stock_details:regularMarketVolume
+")
+TBLPROPERTIES("hbase.table.name" = "history_stock");
+==================================================
+create  view v_im_live_stock as 
+select  
+id StockID ,
+cast(PreviousClose as Decimal(38,2)) Close,
+cast(MarketPrice as Decimal(38,2)) MarketPrice,
+cast(regularMarketChange as Decimal(38,2)) Changed,
+cast(regularMarketChangePercent as Decimal(38,2)) Chaged_percent,
+currency ,
+cast(from_unixtime(cast (regularMarketTime as Bigint),"yyyy-MM-dd HH:mm:ss") as timestamp) OrderDate,
+cast(regularMarketVolume as int) Volumne
+from im_live_stock;
